@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe ApplicationRecord do
   describe 'class methods' do
-    describe '.paginate' do
+    describe '.paginated_list' do
       before :each do
         create(:merchant_with_items, items_count: 30)
 
@@ -10,16 +10,16 @@ RSpec.describe ApplicationRecord do
         @items = merchant.items
       end
 
-      it 'returns a list of objects based on default pagination params' do
-        paginated = @items.paginate
+      it 'returns a list of objects based on default page and per_page settings' do
+        paginated = @items.paginated_list(1, 20)
         expect(paginated).to be_an Array
         expect(paginated.count).to eq 20
         expect(paginated.first).to eq @items.first
         expect(paginated.last).to eq @items[19]
       end
 
-      it 'returns a list of objects given pagination params (both)' do
-        paginated = @items.paginate({page: 3, per_page: 10})
+      it 'returns correct objects given non-standard params' do
+        paginated = @items.paginated_list(3, 10)
 
         expect(paginated).to be_an Array
         expect(paginated.count).to eq 10
@@ -27,22 +27,12 @@ RSpec.describe ApplicationRecord do
         expect(paginated.last).to eq @items[29]
       end
 
-      it 'returns a list of objects given page num only (default 20 per page)' do
-        paginated = @items.paginate({page: 2})
+      it 'returns an empty array if params do not specify any objects' do
+        paginated = @items.paginated_list(5, 10)
 
         expect(paginated).to be_an Array
-        expect(paginated.count).to eq 10
-        expect(paginated.first).to eq @items[20]
-        expect(paginated.last).to eq @items.last
-      end
-
-      it 'returns a list of objects given per_page only (default to first page)' do
-        paginated = @items.paginate({per_page: 10})
-
-        expect(paginated).to be_an Array
-        expect(paginated.count).to eq 10
-        expect(paginated.first).to eq @items.first
-        expect(paginated.last).to eq @items[9]
+        expect(paginated.count).to eq 0
+        expect(paginated).to eq([])
       end
     end
   end
