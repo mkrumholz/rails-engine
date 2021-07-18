@@ -8,7 +8,7 @@ RSpec.describe "Items API Requests" do
 
         get '/api/v1/items'
 
-        expect(response).to be_successful
+        expect(response).to have_http_status(200)
 
         items = JSON.parse(response.body, symbolize_names: true)
 
@@ -47,6 +47,8 @@ RSpec.describe "Items API Requests" do
           all_items = Item.all
 
           get '/api/v1/items', params: {per_page: 10}
+
+          expect(response).to have_http_status(200)
 
           items = JSON.parse(response.body, symbolize_names: true)
 
@@ -87,6 +89,8 @@ RSpec.describe "Items API Requests" do
 
           get '/api/v1/items', params: {page: 2}
 
+          expect(response).to have_http_status(200)
+
           items = JSON.parse(response.body, symbolize_names: true)
 
           expect(items[:data].count).to eq(10)
@@ -126,6 +130,8 @@ RSpec.describe "Items API Requests" do
 
           get '/api/v1/items', params: {page: 2, per_page: 10}
 
+          expect(response).to have_http_status(200)
+
           items = JSON.parse(response.body, symbolize_names: true)
 
           expect(items[:data].count).to eq(10)
@@ -162,7 +168,7 @@ RSpec.describe "Items API Requests" do
       it 'returns an empty array' do
         get '/api/v1/items'
 
-        expect(response).to be_successful
+        expect(response).to have_http_status(200)
 
         items = JSON.parse(response.body, symbolize_names: true)
 

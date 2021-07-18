@@ -8,7 +8,7 @@ RSpec.describe 'Merchants API Requests' do
 
         get '/api/v1/merchants'
 
-        expect(response).to be_successful
+        expect(response).to have_http_status(200)
 
         merchants = JSON.parse(response.body, symbolize_names: true)
 
@@ -39,7 +39,8 @@ RSpec.describe 'Merchants API Requests' do
 
           get '/api/v1/merchants', params: {per_page: 10}
 
-          expect(response).to be_successful
+                  expect(response).to have_http_status(200)
+
 
           merchants = JSON.parse(response.body, symbolize_names: true)
 
@@ -71,7 +72,8 @@ RSpec.describe 'Merchants API Requests' do
 
           get '/api/v1/merchants', params: {page: 2}
 
-          expect(response).to be_successful
+                  expect(response).to have_http_status(200)
+
 
           merchants = JSON.parse(response.body, symbolize_names: true)
 
@@ -103,7 +105,8 @@ RSpec.describe 'Merchants API Requests' do
 
           get '/api/v1/merchants', params: {page: 2, per_page: 10}
 
-          expect(response).to be_successful
+                  expect(response).to have_http_status(200)
+
 
           merchants = JSON.parse(response.body, symbolize_names: true)
 
@@ -132,7 +135,7 @@ RSpec.describe 'Merchants API Requests' do
       it 'returns an empty array' do
         get '/api/v1/merchants'
 
-        expect(response).to be_successful
+        expect(response).to have_http_status(200)
 
         merchants = JSON.parse(response.body, symbolize_names: true)
 
