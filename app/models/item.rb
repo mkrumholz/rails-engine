@@ -1,6 +1,6 @@
 class Item < ApplicationRecord
   belongs_to :merchant
 
-  validates_presence_of :name, :description, :unit_price
-  validates_numericality_of :unit_price, greater_than: 0.0
+  validates :name, :description, :unit_price, presence: true
+  validates :unit_price, numericality: { greater_than: 0.0 }
 end
