@@ -290,9 +290,36 @@ RSpec.describe "Items API Requests" do
       end
     end
 
-    # context 'when attributes are present but not valid' do
+    context 'when attributes are present but not valid' do
+      it 'returns a failure message and 422 status code' do
+        merchant = create(:merchant)
+        params = {
+          name: "New Item",
+          description: "This is a new item.",
+          unit_price: 'string',
+          merchant_id: merchant.id
+        }
 
-    # end
+        post '/api/v1/items', params: params
+
+        expect(response).to have_http_status(422)
+        expect(response.body).to match(/Validation failed: Unit price is not a number/)
+      end
+
+      it 'cannot create an item without a valid merchant id' do
+        params = {
+          name: "New Item",
+          description: "This is a new item.",
+          unit_price: 103.58,
+          merchant_id: 17
+        }
+
+        post '/api/v1/items', params: params
+
+        expect(response).to have_http_status(422)
+        expect(response.body).to match(/Validation failed: Merchant must exist/)
+      end
+    end
 
     # context 'when required attributes are not present' do
 
