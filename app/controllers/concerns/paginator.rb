@@ -1,10 +1,14 @@
 module Paginator
   def paginate(objects, settings = {})
-    settings = settings.delete_if { |_key, val| val.nil? }.to_h
-    settings = defaults.merge(settings)
+    settings = validate_preferences(settings)
     page = settings[:page].to_i
     per_page = settings[:per_page].to_i
     objects.paginated_list(page, per_page)
+  end
+
+  def validate_preferences(settings)
+    settings.delete_if { |_key, val| val.nil? || val.to_i < 1 }.to_h
+    defaults.merge(settings)
   end
 
   def defaults

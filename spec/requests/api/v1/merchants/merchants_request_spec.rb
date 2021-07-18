@@ -39,7 +39,7 @@ RSpec.describe 'Merchants API Requests' do
 
           get '/api/v1/merchants', params: {per_page: 10}
 
-                  expect(response).to have_http_status(200)
+          expect(response).to have_http_status(200)
 
 
           merchants = JSON.parse(response.body, symbolize_names: true)
@@ -72,7 +72,7 @@ RSpec.describe 'Merchants API Requests' do
 
           get '/api/v1/merchants', params: {page: 2}
 
-                  expect(response).to have_http_status(200)
+          expect(response).to have_http_status(200)
 
 
           merchants = JSON.parse(response.body, symbolize_names: true)
@@ -80,6 +80,37 @@ RSpec.describe 'Merchants API Requests' do
           expect(merchants[:data].count).to eq(10)
           expect(merchants[:data].first[:id]).to eq all_merchants[20].id.to_s
           expect(merchants[:data].last[:id]).to eq all_merchants.last.id.to_s
+
+          merchants[:data].each do |merchant|
+            expect(merchant).to have_key(:id)
+            expect(merchant[:id]).to be_an(String)
+
+            expect(merchant).to have_key(:type)
+            expect(merchant[:type]).to eq "merchant"
+
+            expect(merchant).to have_key(:attributes)
+            expect(merchant[:attributes]).to be_a Hash
+
+            expect(merchant[:attributes]).to have_key(:name)
+            expect(merchant[:attributes][:name]).to be_an(String)
+          end
+        end
+
+        it 'defaults to page 1 if page param is specified as < 1' do
+          create_list(:merchant, 30)
+
+          all_merchants = Merchant.all
+
+          get '/api/v1/merchants', params: {page: -1}
+
+          expect(response).to have_http_status(200)
+
+
+          merchants = JSON.parse(response.body, symbolize_names: true)
+
+          expect(merchants[:data].count).to eq(20)
+          expect(merchants[:data].first[:id]).to eq all_merchants.first.id.to_s
+          expect(merchants[:data].last[:id]).to eq all_merchants[19].id.to_s
 
           merchants[:data].each do |merchant|
             expect(merchant).to have_key(:id)
@@ -105,7 +136,7 @@ RSpec.describe 'Merchants API Requests' do
 
           get '/api/v1/merchants', params: {page: 2, per_page: 10}
 
-                  expect(response).to have_http_status(200)
+          expect(response).to have_http_status(200)
 
 
           merchants = JSON.parse(response.body, symbolize_names: true)
