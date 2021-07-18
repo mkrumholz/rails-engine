@@ -174,4 +174,46 @@ RSpec.describe 'Merchants API Requests' do
       end
     end
   end
+
+  describe 'GET merchants/:id' do
+    context 'merchant exists' do
+      it 'returns the specific merchant details' do
+        merchant_1 = create(:merchant)
+
+        get "/api/v1/merchants/#{merchant_1.id}"
+
+        expect(response).to have_http_status(200)
+
+        merchant = JSON.parse(response.body, symbolize_names: true)
+
+        expect(merchant[:data]).to be_a Hash
+
+        data = merchant[:data]
+        expect(data[:id]).to eq merchant_1.id.to_s
+        expect(data[:type]).to eq "merchant"
+        expect(data[:attributes]).to be_a Hash
+
+        expect(data[:attributes]).to have_key(:name)
+        expect(data[:attributes][:name]).to be_an(String)
+      end
+    end
+
+    context 'merchant does not exist' do
+      it 'returns a status code 404' do 
+        get "/api/v1/merchants/#{14583958}"
+        
+        expect(response).to have_http_status(404)
+        expect(response.body).to match(/Couldn't find Merchant/)
+      end
+    end
+
+    context 'request is not valid' do
+      it 'returns a status code 404' do
+        get "/api/v1/merchants/string"
+
+        expect(response).to have_http_status(404)
+        expect(response.body).to match(/Couldn't find Merchant/)
+      end
+    end
+  end
 end
