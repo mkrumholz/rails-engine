@@ -268,4 +268,121 @@ RSpec.describe "Items API Requests" do
       end
     end
   end
+
+  describe 'POST /items' do
+    context 'when all attributes are present and valid' do
+      it 'creates an item and returns a 201 status code' do
+        merchant = create(:merchant)
+        params = {
+          name: "New Item",
+          description: "This is a new item.",
+          unit_price: 103.58,
+          merchant_id: merchant.id
+        }
+
+        post '/api/v1/items', params: params
+
+        expect(response).to have_http_status(201)
+        expect(merchant.items.last[:name]).to eq params[:name]
+        expect(merchant.items.last[:description]).to eq params[:description]
+        expect(merchant.items.last[:unit_price]).to eq params[:unit_price]
+        expect(merchant.items.last[:merchant_id]).to eq params[:merchant_id]
+
+        item = JSON.parse(response.body, symbolize_names: true)
+        
+        expect(item[:data]).to be_a Hash
+
+        data = item[:data]
+        expect(data[:id]).to eq merchant.items.last.id.to_s
+        expect(data[:type]).to eq "item"
+        expect(data[:attributes]).to be_a Hash
+
+        expect(data[:attributes]).to have_key(:name)
+        expect(data[:attributes][:name]).to be_an(String)
+
+        expect(data[:attributes]).to have_key(:description)
+        expect(data[:attributes][:description]).to be_an(String)
+
+        expect(data[:attributes]).to have_key(:unit_price)
+        expect(data[:attributes][:unit_price]).to be_an(Float)
+        
+        expect(data[:attributes]).to have_key(:merchant_id)
+        expect(data[:attributes][:merchant_id]).to be_an(Integer)
+      end
+    end
+
+    context 'when attributes are present but not valid' do
+      it 'returns a failure message and 422 status code' do
+        merchant = create(:merchant)
+        params = {
+          name: "New Item",
+          description: "This is a new item.",
+          unit_price: 'string',
+          merchant_id: merchant.id
+        }
+
+        post '/api/v1/items', params: params
+
+        expect(response).to have_http_status(422)
+        expect(response.body).to match(/Validation failed: Unit price is not a number/)
+      end
+
+      it 'cannot create an item without a valid merchant id' do
+        params = {
+          name: "New Item",
+          description: "This is a new item.",
+          unit_price: 103.58,
+          merchant_id: 17
+        }
+
+        post '/api/v1/items', params: params
+
+        expect(response).to have_http_status(422)
+        expect(response.body).to match(/Validation failed: Merchant must exist/)
+      end
+    end
+
+    context 'when required attributes are not present' do
+      it 'returns a failure message and status code 422' do
+        merchant = create(:merchant)
+        params = {
+          name: "New Item",
+          unit_price: 103.58,
+          merchant_id: merchant.id
+        }
+
+        post '/api/v1/items', params: params
+
+        expect(response).to have_http_status(422)
+        expect(response.body).to match(/Validation failed: Description can't be blank/)
+      end
+    end
+
+    context 'when extra non-standard attributes are present' do
+      it 'creates the item but ignores non-standard attributes' do
+        merchant = create(:merchant)
+        params = {
+          name: "New Item",
+          description: "This is a new item.",
+          unit_price: 103.58,
+          extra_param: "select * from merchants;",
+          merchant_id: merchant.id
+        }
+
+        post '/api/v1/items', params: params
+
+        expect(response).to have_http_status(201)
+
+        item = JSON.parse(response.body, symbolize_names: true)
+
+        expect(item[:data]).to be_a Hash
+
+        data = item[:data]
+        expect(data[:id]).to eq merchant.items.last.id.to_s
+        expect(data[:type]).to eq "item"
+        expect(data[:attributes]).to be_a Hash
+        expect(data).not_to have_key(:extra_param)
+      end
+    end
+  end
 end
