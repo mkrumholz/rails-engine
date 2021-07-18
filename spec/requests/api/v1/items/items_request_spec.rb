@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe "Items API Requests" do
   describe 'GET /items' do
     context 'when pagination params are unspecified' do
-      it 'sends a list of all items with default params' do
+      it 'sends a list of first 20 items with default params' do
         create(:merchant_with_items, items_count: 30)
 
         get '/api/v1/items'
