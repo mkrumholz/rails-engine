@@ -1,6 +1,6 @@
 module Paginator
   def paginate(objects, settings = {})
-    settings = settings.delete_if {|key, val| val.nil?}.to_h
+    settings = settings.delete_if { |_key, val| val.nil? }.to_h
     settings = defaults.merge(settings)
     page = settings[:page].to_i
     per_page = settings[:per_page].to_i
@@ -8,6 +8,6 @@ module Paginator
   end
 
   def defaults
-    {page: 1, per_page: 20}
+    { page: 1, per_page: 20 }
   end
 end

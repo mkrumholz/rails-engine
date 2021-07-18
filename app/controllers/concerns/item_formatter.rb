@@ -6,7 +6,7 @@ module ItemFormatter
   def format_json(item)
     {
       id: item.id.to_s,
-      type: "item",
+      type: 'item',
       attributes: {
         name: item.name,
         description: item.description,
