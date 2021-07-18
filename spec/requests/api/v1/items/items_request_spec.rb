@@ -215,4 +215,57 @@ RSpec.describe "Items API Requests" do
       end
     end
   end
+
+  describe 'GET items/:id' do
+    context 'item exists' do
+      it 'returns the specific item details' do
+        merchant = create(:merchant)
+        item_1 = create(:item, merchant: merchant)
+        item_2 = create(:item, merchant: merchant)
+
+        get "/api/v1/items/#{item_1.id}"
+
+        expect(response).to have_http_status(200)
+
+        item = JSON.parse(response.body, symbolize_names: true)
+
+        expect(item[:data]).to be_a Hash
+
+        data = item[:data]
+        expect(data[:id]).to eq item_1.id.to_s
+        expect(data[:type]).to eq "item"
+        expect(data[:attributes]).to be_a Hash
+
+        expect(data[:attributes]).to have_key(:name)
+        expect(data[:attributes][:name]).to be_an(String)
+
+        expect(data[:attributes]).to have_key(:description)
+        expect(data[:attributes][:description]).to be_an(String)
+
+        expect(data[:attributes]).to have_key(:unit_price)
+        expect(data[:attributes][:unit_price]).to be_an(Float)
+        
+        expect(data[:attributes]).to have_key(:merchant_id)
+        expect(data[:attributes][:merchant_id]).to be_an(Integer)
+      end
+    end
+
+    context 'item does not exist' do
+      it 'returns a status code 404' do 
+        get "/api/v1/items/#{14583958}"
+        
+        expect(response).to have_http_status(404)
+        expect(response.body).to match(/Couldn't find Item/)
+      end
+    end
+
+    context 'request is not valid' do
+      it 'returns a status code 404' do
+        get "/api/v1/items/string"
+
+        expect(response).to have_http_status(404)
+        expect(response.body).to match(/Couldn't find Item/)
+      end
+    end
+  end
 end

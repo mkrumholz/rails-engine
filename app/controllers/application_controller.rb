@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::API
+  include ExceptionHandler
   include ItemFormatter
   include MerchantFormatter
-  include Response
   include Paginator
+  include Response
 end
