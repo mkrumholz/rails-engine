@@ -3,6 +3,7 @@
 Please check if your PR fulfills the following requirements:
 - [ ] Tests for the changes have been added (for bug fixes / features)
 - [ ] Rubocop has passed locally and any fixes were made for failures
+- [ ] All Postman tests are passing for any endpoints exposed
 
 
 ## Pull request type
