@@ -268,4 +268,38 @@ RSpec.describe "Items API Requests" do
       end
     end
   end
+
+  describe 'POST /items' do
+    context 'when all attributes are present and valid' do
+      it 'creates an item and returns a 201 status code' do
+        merchant = create(:merchant)
+        params = {
+          name: "New Item",
+          description: "This is a new item.",
+          unit_price: 103.58,
+          merchant_id: merchant.id
+        }
+
+        post '/api/v1/items', params: params
+
+        expect(response).to have_http_status(201)
+        expect(merchant.items.last[:name]).to eq params[:name]
+        expect(merchant.items.last[:description]).to eq params[:description]
+        expect(merchant.items.last[:unit_price]).to eq params[:unit_price]
+        expect(merchant.items.last[:merchant_id]).to eq params[:merchant_id]
+      end
+    end
+
+    # context 'when attributes are present but not valid' do
+
+    # end
+
+    # context 'when required attributes are not present' do
+
+    # end
+
+    # context 'when extra non-standard attributes are present' do
+
+    # end
+  end
 end

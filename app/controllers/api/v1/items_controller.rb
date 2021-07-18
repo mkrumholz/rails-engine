@@ -11,4 +11,16 @@ class Api::V1::ItemsController < ApplicationController
     formatted = format_json(@item)
     json_response(formatted)
   end
+
+  def create
+    @item = Item.create!(item_params)
+    formatted = format_json(@item)
+    json_response(formatted, :created)
+  end
+
+  private
+
+  def item_params
+    params.permit(:name, :description, :unit_price, :merchant_id)
+  end
 end
