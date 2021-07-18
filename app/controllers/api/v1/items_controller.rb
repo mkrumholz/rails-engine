@@ -8,9 +8,7 @@ class Api::V1::ItemsController < ApplicationController
 
   def show
     @item = Item.find(params[:id])
-    if @item
-      formatted = format_json(@item)
-      json_response(formatted)
-    end
+    formatted = format_json(@item)
+    json_response(formatted)
   end
 end
