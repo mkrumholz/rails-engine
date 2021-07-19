@@ -568,4 +568,29 @@ RSpec.describe "Items API Requests" do
       end
     end
   end
+
+  describe 'DESTROY /items/:id' do
+    context 'when the item exists' do
+      it 'destroys the item' do
+        merchant = create(:merchant_with_items)
+        item = merchant.items.last
+
+        delete "/api/v1/items/#{item.id}"
+
+        expect(response).to have_http_status(204)
+        expect(response.body).to eq ''
+      end
+    end
+
+    context 'when the item does not exist' do
+      it 'returns a failure message and 404 status code' do
+        merchant = create(:merchant)
+
+        delete "/api/v1/items/235238"
+
+        expect(response).to have_http_status(404)
+        expect(response.body).to match(/Couldn't find Item/)
+      end
+    end
+  end
 end
