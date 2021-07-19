@@ -489,7 +489,7 @@ RSpec.describe "Items API Requests" do
 
           expect(Item.find(item.id).unit_price).to eq item.unit_price
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_http_status(404) # returns 422 currently
           expect(response.body).to match(/Couldn't find Merchant/)
         end
 
