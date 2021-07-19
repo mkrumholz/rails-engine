@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe 'merchant items requests' do
   describe 'GET /merchants/:id/items' do
     context 'when the merchant exists and has items' do
-      it 'returns a list of all merchant items'
+      it 'returns a list of all merchant items' do
         merchant = create(:merchant)
-        item = create_list(:item, 22)
+        item = create_list(:item, 22, merchant: merchant)
 
         get "/api/v1/merchants/#{merchant.id}/items"
 
@@ -56,10 +56,10 @@ RSpec.describe 'merchant items requests' do
     
     context 'when the merchant does not exist' do
       it 'returns an error message and 404 status code' do
-        get "/api/v1/merchants/#{merchant.id}/items"
+        get "/api/v1/merchants/85283426/items"
 
         expect(response).to have_http_status(404)
-        expect(response.body).to match(/Couldn't find Item/)
+        expect(response.body).to match(/Couldn't find Merchant/)
       end
     end
   end
