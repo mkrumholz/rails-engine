@@ -1,5 +1,5 @@
 class Api::V1::ItemsController < ApplicationController
-  before_action :set_item, only: %i[show update]
+  before_action :set_item, only: %i[show update destroy]
 
   def index
     @items = Item.all
@@ -23,6 +23,10 @@ class Api::V1::ItemsController < ApplicationController
     @item.update!(item_params)
     formatted = format_json(@item)
     json_response(formatted, :accepted)
+  end
+
+  def destroy
+    @item.destroy
   end
 
   private
