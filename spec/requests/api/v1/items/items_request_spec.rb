@@ -283,10 +283,10 @@ RSpec.describe "Items API Requests" do
         post '/api/v1/items', params: params
 
         expect(response).to have_http_status(201)
-        expect(merchant.items.last[:name]).to eq params[:name]
-        expect(merchant.items.last[:description]).to eq params[:description]
-        expect(merchant.items.last[:unit_price]).to eq params[:unit_price]
-        expect(merchant.items.last[:merchant_id]).to eq params[:merchant_id]
+        expect(merchant.items.last.name).to eq params[:name]
+        expect(merchant.items.last.description).to eq params[:description]
+        expect(merchant.items.last.unit_price).to eq params[:unit_price]
+        expect(merchant.items.last.merchant_id).to eq params[:merchant_id]
 
         item = JSON.parse(response.body, symbolize_names: true)
         
@@ -390,33 +390,106 @@ RSpec.describe "Items API Requests" do
     context 'when the item exists' do
       context 'when all attributes are present and valid' do
         it 'updates the item and returns a 202 status code' do
+          merchant = create(:merchant)
+          item = create(:item, merchant: merchant)
+          params = {
+            name: "New Item",
+            description: "This is a new item.",
+            unit_price: 103.58,
+            merchant_id: merchant.id
+          }
 
+          patch "/api/v1/items/#{item.id}", params: params
+
+          expect(response).to have_http_status(202)
+
+          expect(item.name).to eq params[:name]
+          expect(item.description).to eq params[:description]
+          expect(item.unit_price).to eq params[:unit_price]
+          expect(item.merchant_id).to eq params[:merchant_id]
+
+          item = JSON.parse(response.body, symbolize_names: true)
+        
+          expect(item[:data]).to be_a Hash
+
+          data = item[:data]
+          expect(data[:id]).to eq item.id.to_s
+          expect(data[:type]).to eq "item"
+          expect(data[:attributes]).to be_a Hash
+
+          expect(data[:attributes]).to have_key(:name)
+          expect(data[:attributes][:name]).to be_an(String)
+
+          expect(data[:attributes]).to have_key(:description)
+          expect(data[:attributes][:description]).to be_an(String)
+
+          expect(data[:attributes]).to have_key(:unit_price)
+          expect(data[:attributes][:unit_price]).to be_an(Float)
+          
+          expect(data[:attributes]).to have_key(:merchant_id)
+          expect(data[:attributes][:merchant_id]).to be_an(Integer)
         end
       end
 
       # context 'when only one attribute is present and valid' do
       #   it 'updates the item and returns a 202 status code' do
-
-      #   end
+      #     merchant = create(:merchant)
+      #     item = create(:item, merchant: merchant)
+      #     params = {
+      #       name: "New Item",
+      #       description: "This is a new item.",
+      #       unit_price: 103.58,
+      #       extra_param: "select * from merchants;",
+      #       merchant_id: merchant.id
+      #     }
+      # patch "/api/v1/items/#{item.id}", params: params
+      # #   end
       # end
 
       # context 'when an invalid attribute is present' do
       #   it 'returns a failure message and 404 status code' do
-
+            # merchant = create(:merchant)
+            # item = create(:item, merchant: merchant)
+            # params = {
+            #   name: "New Item",
+            #   description: "This is a new item.",
+            #   unit_price: 103.58,
+            #   extra_param: "select * from merchants;",
+            #   merchant_id: merchant.id
+            # }
       #   end
       # end
 
       # context 'when non-standard attributes are present' do
       #   it 'updates the item, returns a 202 status, and ignores the extra attributes' do
-
-      #   end
+      #       merchant = create(:merchant)
+      #       item = create(:item, merchant: merchant)
+      #       params = {
+      #         name: "New Item",
+      #         description: "This is a new item.",
+      #         unit_price: 103.58,
+      #         extra_param: "select * from merchants;",
+      #         merchant_id: merchant.id
+      #       }
+      # #   end
       # end
     end
 
-    # context 'when the no item exists for the id' do
-    #   it 'returns a failure message and 404 status code' do
+    context 'when the no item exists for the id' do
+      it 'returns a failure message and 404 status code' do
+        merchant = create(:merchant)
+        params = {
+          name: "New Item",
+          description: "This is a new item.",
+          unit_price: 103.58,
+          merchant_id: merchant.id
+        }
 
-    #   end
-    # end
+        patch "/api/v1/items/string_id", params: params
+
+        expect(response).to have_http_status(404)
+        expect(response.body).to match(/Couldn't find Item/)
+      end
+    end
   end
 end

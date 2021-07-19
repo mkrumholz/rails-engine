@@ -1,4 +1,6 @@
 class Api::V1::ItemsController < ApplicationController
+  before_action :set_item, only: [:show, :update]
+
   def index
     @items = Item.all
     list_items = paginate(@items, { page: params[:page], per_page: params[:per_page] })
@@ -7,7 +9,6 @@ class Api::V1::ItemsController < ApplicationController
   end
 
   def show
-    @item = Item.find(params[:id])
     formatted = format_json(@item)
     json_response(formatted)
   end
@@ -18,9 +19,19 @@ class Api::V1::ItemsController < ApplicationController
     json_response(formatted, :created)
   end
 
+  def update
+    @item.update!(item_params)
+    formatted = format_json(@item)
+    json_response(formatted, :accepted)
+  end
+
   private
 
   def item_params
     params.permit(:name, :description, :unit_price, :merchant_id)
+  end
+
+  def set_item
+    @item = Item.find(params[:id])
   end
 end
