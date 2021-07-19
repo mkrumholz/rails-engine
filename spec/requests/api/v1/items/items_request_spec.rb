@@ -583,8 +583,14 @@ RSpec.describe "Items API Requests" do
     end
 
     context 'when the item does not exist' do
-      it 'returns a failure message and 404 status code'
+      it 'returns a failure message and 404 status code' do
+        merchant = create(:merchant)
 
+        delete "/api/v1/items/235238"
+
+        expect(response).to have_http_status(404)
+        expect(response.body).to match(/Couldn't find Item/)
+      end
     end
   end
 end
