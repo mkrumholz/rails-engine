@@ -385,4 +385,38 @@ RSpec.describe "Items API Requests" do
       end
     end
   end
+
+  describe 'PATCH /items/:id' do
+    context 'when the item exists' do
+      context 'when all attributes are present and valid' do
+        it 'updates the item and returns a 202 status code' do
+
+        end
+      end
+
+      # context 'when only one attribute is present and valid' do
+      #   it 'updates the item and returns a 202 status code' do
+
+      #   end
+      # end
+
+      # context 'when an invalid attribute is present' do
+      #   it 'returns a failure message and 404 status code' do
+
+      #   end
+      # end
+
+      # context 'when non-standard attributes are present' do
+      #   it 'updates the item, returns a 202 status, and ignores the extra attributes' do
+
+      #   end
+      # end
+    end
+
+    # context 'when the no item exists for the id' do
+    #   it 'returns a failure message and 404 status code' do
+
+    #   end
+    # end
+  end
 end
