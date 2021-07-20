@@ -14,7 +14,7 @@ RSpec.describe Merchant, type: :model do
         merchant_4 = create(:merchant, name: 'The Tilt')
         merchant_5 = create(:merchant, name: 'nilla\'s wafers')
 
-        expect(Merchant.find_first_by_name('iLl')).to eq [merchant_2]
+        expect(Merchant.find_first_by_name('iLl')).to eq merchant_2
       end
 
       it 'returns an empty array if no matches are available' do
@@ -22,7 +22,7 @@ RSpec.describe Merchant, type: :model do
         merchant_3 = create(:merchant, name: 'The Tilt')
         merchant_4 = create(:merchant, name: 'Mortimer\'s Mysteries')
           
-        expect(Merchant.find_first_by_name('iLl')).to be_empty
+        expect(Merchant.find_first_by_name('iLl')).to be_nil
       end
     end
   end
