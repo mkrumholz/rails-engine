@@ -13,9 +13,8 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def find
-    @merchant = Merchant.find_first_by_name(params[:name])
-    # @merchant = Merchant.find_by_sql("select * from merchants where name ilike '%#{params[:name]}%' order by lower(name) asc limit 1;").first
-    return json_response('') if @merchant.nil?
+    @merchant = Merchant.find_first_by_name(params[:name]).first
+    return json_response({}) if @merchant.nil?
     formatted = format_merchant_json(@merchant)
     json_response(formatted)
   end

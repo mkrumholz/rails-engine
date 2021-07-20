@@ -10,6 +10,6 @@ module MerchantFormatter
       attributes: {
         name: merchant.name
       }
-    }
+    } unless merchant.nil?
   end
 end

@@ -67,7 +67,9 @@ RSpec.describe 'search merchants' do
 
         result = JSON.parse(response.body, symbolize_names: true)
 
-        expect(result[:data]).to eq ''
+        expect(result).to be_a Hash
+        expect(result).to have_key :data
+        expect(result[:data]).to be_empty
       end
     end
   end
