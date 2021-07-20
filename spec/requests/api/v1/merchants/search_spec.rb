@@ -64,7 +64,10 @@ RSpec.describe 'search merchants' do
         get "/api/v1/merchants/find", params: { name: 'iLl'}
           
         expect(response).to have_http_status(200)
-        expect(response.body).to eq ''
+
+        result = JSON.parse(response.body, symbolize_names: true)
+
+        expect(result[:data]).to eq ''
       end
     end
   end
