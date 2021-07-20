@@ -15,6 +15,7 @@ class Api::V1::MerchantsController < ApplicationController
   def find
     @merchant = Merchant.find_first_by_name(params[:name])
     return json_response({}) if @merchant.nil?
+
     formatted = format_merchant_json(@merchant)
     json_response(formatted)
   end
