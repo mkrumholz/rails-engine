@@ -2,9 +2,9 @@ class Api::V1::ItemsController < ApplicationController
   before_action :set_item, only: %i[show update destroy]
 
   def index
-    @items = Item.all
-    list_items = paginate(@items, { page: params[:page], per_page: params[:per_page] })
-    json_response(ItemSerializer.new(list_items))
+    all_items = Item.all
+    @items = paginate(all_items, { page: params[:page], per_page: params[:per_page] })
+    json_response(ItemSerializer.new(@items))
   end
 
   def show
