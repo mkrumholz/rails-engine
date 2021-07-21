@@ -6,7 +6,7 @@ class Item < ApplicationRecord
 
   def self.search_by_name(query)
     where('name ilike ? or description ilike ?', "%#{query}%", "%#{query}%")
-    .order(Arel.sql('lower(name) asc')).to_a
+      .order(Arel.sql('lower(name) asc')).to_a
   end
 
   def self.search_by_price(search_details)
