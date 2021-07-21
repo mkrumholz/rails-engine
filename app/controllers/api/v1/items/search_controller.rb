@@ -3,7 +3,7 @@ class Api::V1::Items::SearchController < ApplicationController
     return json_response('', :bad_request) unless valid_search?(params)
 
     @items = search_items(params)
-    formatted = format_item_data(@items)
+    formatted = ItemSerializer.new(@items)
     json_response(formatted)
   end
 
