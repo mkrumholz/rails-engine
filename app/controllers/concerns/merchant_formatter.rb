@@ -4,12 +4,12 @@ module MerchantFormatter
   end
 
   def format_merchant_json(merchant)
-      {
-        id: merchant.id.to_s,
-        type: 'merchant',
-        attributes: {
-          name: merchant.name
-        }
+    {
+      id: merchant.id.to_s,
+      type: 'merchant',
+      attributes: {
+        name: merchant.name
       }
+    }
   end
 end
