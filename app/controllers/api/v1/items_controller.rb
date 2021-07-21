@@ -30,6 +30,18 @@ class Api::V1::ItemsController < ApplicationController
     head :no_content
   end
 
+  def find
+
+    if params[:name]
+      @items = Item.search_by_name(params[:name])
+    elsif params[:min_price] || params[:max_price]
+    else
+      return json_response({}, :bad_request)
+    end
+    formatted = format_item_data(@items)
+    json_response(formatted)
+  end
+
   private
 
   def item_params

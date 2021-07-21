@@ -79,5 +79,9 @@ RSpec.describe 'search items' do
     # context 'when attempt is made to search with both sets of params' do
     #   # should error 
     # end
+
+    # context 'when params are missing or empty' do
+      
+    # end
   end
 end
