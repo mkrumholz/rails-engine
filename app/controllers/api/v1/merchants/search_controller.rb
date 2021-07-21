@@ -1,12 +1,11 @@
 class Api::V1::Merchants::SearchController < ApplicationController
   def find
-    return json_response({}, :bad_request) unless valid_search?(params)
+    return json_response({ data: {} }, :bad_request) unless valid_search?(params)
 
     @merchant = Merchant.find_first_by_name(params[:name])
-    return json_response({}) if @merchant.nil?
+    return json_response({ data: {} }) if @merchant.nil?
 
-    formatted = format_merchant_json(@merchant)
-    json_response(formatted)
+    json_response(MerchantSerializer.new(@merchant))
   end
 
   private

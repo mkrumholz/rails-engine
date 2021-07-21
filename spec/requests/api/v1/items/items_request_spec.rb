@@ -476,7 +476,7 @@ RSpec.describe "Items API Requests" do
       end
 
       context 'when an invalid attribute is present' do
-        xit 'does not update, returns a failure message and 404 if merchant not found' do
+        it 'does not update, returns a failure message and 404 if merchant not found' do
           merchant = create(:merchant)
           item = create(:item, merchant: merchant)
           params = {
@@ -489,8 +489,8 @@ RSpec.describe "Items API Requests" do
 
           expect(Item.find(item.id).unit_price).to eq item.unit_price
 
-          expect(response).to have_http_status(404) # returns 422 currently
-          expect(response.body).to match(/Couldn't find Merchant/)
+          expect(response).to have_http_status(422)
+          expect(response.body).to match(/Merchant must exist/)
         end
 
         it 'does not update, returns a failure message and 422 if validations fail' do

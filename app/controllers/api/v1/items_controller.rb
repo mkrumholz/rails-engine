@@ -4,25 +4,21 @@ class Api::V1::ItemsController < ApplicationController
   def index
     @items = Item.all
     list_items = paginate(@items, { page: params[:page], per_page: params[:per_page] })
-    formatted_items = format_item_data(list_items)
-    json_response(formatted_items)
+    json_response(ItemSerializer.new(list_items))
   end
 
   def show
-    formatted = format_json(@item)
-    json_response(formatted)
+    json_response(ItemSerializer.new(@item))
   end
 
   def create
     @item = Item.create!(item_params)
-    formatted = format_json(@item)
-    json_response(formatted, :created)
+    json_response(ItemSerializer.new(@item), :created)
   end
 
   def update
     @item.update!(item_params)
-    formatted = format_json(@item)
-    json_response(formatted, :accepted)
+    json_response(ItemSerializer.new(@item), :accepted)
   end
 
   def destroy
