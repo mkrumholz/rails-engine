@@ -13,9 +13,10 @@ class Api::V1::MerchantsController < ApplicationController
   end
 
   def find
+    return json_response({}, :bad_request) if params[:name].nil? or params[:name] == ''
     @merchant = Merchant.find_first_by_name(params[:name])
     return json_response({}) if @merchant.nil?
-    # need to handle missing params
+
     formatted = format_merchant_json(@merchant)
     json_response(formatted)
   end
