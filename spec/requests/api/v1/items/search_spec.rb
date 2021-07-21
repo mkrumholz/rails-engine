@@ -32,16 +32,16 @@ RSpec.describe 'search items' do
           expect(first_item[:attributes][:name]).to eq item_2.name
 
           second_item = result[:data].second
-          expect(first_item[:id]).to eq item_1.id.to_s
-          expect(first_item[:type]).to eq "item"
-          expect(first_item[:attributes]).to be_a Hash
-          expect(first_item[:attributes][:name]).to eq item_1.name
+          expect(second_item[:id]).to eq item_1.id.to_s
+          expect(second_item[:type]).to eq "item"
+          expect(second_item[:attributes]).to be_a Hash
+          expect(second_item[:attributes][:name]).to eq item_1.name
 
           third_item = result[:data].last
-          expect(first_item[:id]).to eq item_3.id.to_s
-          expect(first_item[:type]).to eq "item"
-          expect(first_item[:attributes]).to be_a Hash
-          expect(first_item[:attributes][:name]).to eq item_3.name
+          expect(third_item[:id]).to eq item_3.id.to_s
+          expect(third_item[:type]).to eq "item"
+          expect(third_item[:attributes]).to be_a Hash
+          expect(third_item[:attributes][:name]).to eq item_3.name
         end
       end
 
