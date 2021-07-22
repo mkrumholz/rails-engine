@@ -3,6 +3,8 @@ require 'rails_helper'
 RSpec.describe Item, type: :model do
   describe 'relationships' do
     it { should belong_to :merchant }
+    it {should have_many(:invoice_items).dependent(:destroy) }
+    it {should have_many(:invoices).through(:invoice_items) }
   end
 
   describe 'validations' do
@@ -117,6 +119,57 @@ RSpec.describe Item, type: :model do
 
       expect(Item.search_by_name('ring')).to be_an Array
       expect(Item.search_by_name('ring')).to be_empty
+    end
+  end
+
+  describe 'order_by_revenue' do
+    it 'returns a list of items by revenue generated' do
+      customer = create(:customer)
+      create_list(:merchant, 3) do |merchant| 
+        create_list(:item, 5, merchant: merchant) do |item|
+          invoice = create(:invoice, customer: customer, merchant: merchant)
+          create(:invoice_item, invoice: invoice, item: item)
+          create(:transaction, invoice: invoice)
+        end
+      end
+
+      actual = Item.order_by_revenue(3)
+      expect(actual).to be_an Array
+      expect(actual.length).to eq 3
+      expect(actual.first.revenue > actual.second.revenue).to be true
+    end
+
+    it 'only counts revenue from successful transactions with shipped invoices' do
+      customer = create(:customer)
+      merchant = create(:merchant)
+
+      item_1 = create(:item, merchant: merchant)
+      item_2 = create(:item, merchant: merchant)
+      item_3 = create(:item, merchant: merchant)
+      item_4 = create(:item, merchant: merchant)
+
+      invoice_1 = create(:invoice, customer: customer, merchant: merchant, status: 'shipped') # shipped and good transaction
+      transaction_1 = create(:transaction, invoice: invoice_1, result: 'success')
+      invoice_item_1 = create(:invoice_item, invoice: invoice_1, item: item_1, unit_price: 10.00)
+      invoice_item_2 = create(:invoice_item, invoice: invoice_1, item: item_2, unit_price: 20.00)
+
+      invoice_2 = create(:invoice, customer: customer, merchant: merchant, status: 'pending') # not shipped
+      transaction_2 = create(:transaction, invoice: invoice_2, result: 'success') 
+      invoice_item_3 = create(:invoice_item, invoice: invoice_2, item: item_3, unit_price: 20.00)
+
+      invoice_3 = create(:invoice, customer: customer, merchant: merchant, status: 'shipped') # bad transaction
+      transaction_3 = create(:transaction, invoice: invoice_3, result: 'failure')
+      invoice_item_4 = create(:invoice_item, invoice: invoice_3, item: item_4, unit_price: 20.00)
+      
+      actual = Item.order_by_revenue(4)
+      expect(actual).to be_an Array
+      expect(actual.length).to eq 2
+      expect(actual.first).to eq item_2
+      expect(actual.second).to eq item_1
+      expect(actual.first.revenue > actual.second.revenue).to be true
+
+      expect(actual).not_to include item_3
+      expect(actual).not_to include item_4
     end
   end
 end
