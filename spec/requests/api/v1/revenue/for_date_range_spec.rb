@@ -37,7 +37,7 @@ RSpec.describe 'requests for date range' do
 
   context 'both dates are present and valid' do
     it 'returns a revenue object showing the total for that range (inclusive)' do
-      get '/api/v1/revenue', params: {start_date: '2021-04-01', end_date: '2021-06-01'}
+      get '/api/v1/revenue', params: {start: '2021-04-01', end: '2021-06-01'}
 
       expect(response).to have_http_status(200)
 
@@ -53,7 +53,7 @@ RSpec.describe 'requests for date range' do
 
   context 'start date is missing' do
     it 'returns an error message and 400 status code' do
-      get '/api/v1/revenue', params: {end_date: '2021-06-01'}
+      get '/api/v1/revenue', params: {end: '2021-06-01'}
       
       expect(response).to have_http_status(400)
       expect(response.body).to match(/Bad request/)
@@ -62,7 +62,7 @@ RSpec.describe 'requests for date range' do
 
   context 'end date is missing' do
     it 'returns an error message and 400 status code' do
-      get '/api/v1/revenue', params: {start_date: '2021-04-01'}
+      get '/api/v1/revenue', params: {start: '2021-04-01'}
       
       expect(response).to have_http_status(400)
       expect(response.body).to match(/Bad request/)
@@ -80,7 +80,7 @@ RSpec.describe 'requests for date range' do
 
   context 'date format is not valid' do
     it 'returns an error message and 400 status code' do
-      get '/api/v1/revenue', params: {start_date: 'string', end_date: ''}
+      get '/api/v1/revenue', params: {start: 'string', end: ''}
       
       expect(response).to have_http_status(400)
       expect(response.body).to match(/Bad request/)
@@ -89,7 +89,7 @@ RSpec.describe 'requests for date range' do
 
   context 'end date is before start date' do
     it 'returns an error message and 400 status code' do
-      get '/api/v1/revenue', params: {start_date: '2021-06-01', end_date: '2021-04-01'}
+      get '/api/v1/revenue', params: {start: '2021-06-01', end: '2021-04-01'}
       
       expect(response).to have_http_status(400)
       expect(response.body).to match(/Bad request/)

@@ -4,6 +4,7 @@ class RevenueSerializer
       data:
       {
         id: nil,
+        type: 'revenue',
         attributes: {
           revenue: revenue
         }
