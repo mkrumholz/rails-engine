@@ -3,7 +3,7 @@ class Api::V1::Merchants::SearchController < ApplicationController
     return json_response({ error: 'Bad request' }, :bad_request) unless valid_search?(params)
 
     @merchant = Merchant.find_first_by_name(params[:name])
-    return json_response({data: {}}) if @merchant.nil?
+    return json_response({ data: {} }) if @merchant.nil?
 
     json_response(MerchantSerializer.new(@merchant))
   end
