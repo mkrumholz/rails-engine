@@ -10,6 +10,6 @@ class Api::V1::Revenue::ItemsController < ApplicationController
   private
 
   def quantity_valid?(quantity)
-    quantity.is_a?(Integer) && quantity >= 1 && quantity <= 1000000
+    quantity.is_a?(Integer) && quantity >= 1 && quantity <= 1_000_000
   end
 end
