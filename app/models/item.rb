@@ -22,7 +22,6 @@ class Item < ApplicationRecord
       where('unit_price > ?', min).to_a
     end
   end
-  
 
   def self.order_by_revenue(result_count)
     joins(invoices: :transactions)
@@ -34,6 +33,4 @@ class Item < ApplicationRecord
       .limit(result_count)
       .to_a
   end
-
-
 end
