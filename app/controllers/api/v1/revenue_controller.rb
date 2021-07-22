@@ -2,7 +2,7 @@ class Api::V1::RevenueController < ApplicationController
   def show
     return json_response({ errors: 'Bad request' }, :bad_request) unless range_valid?(params)
     @revenue = Invoice.revenue_for_range(params[:start_date], params[:end_date])
-    json_response(RevenueSerializer.new(@revenue))
+    json_response(RevenueSerializer.format_json(@revenue))
   end
 
   private
