@@ -35,7 +35,7 @@ RSpec.describe 'Items by revenue' do
       second_item = result[:data].second
       first_revenue = top_item[:attributes][:revenue]
       second_revenue = second_item[:attributes][:revenue]
-      expect(first_revenue).to be_greater_than second_revenue
+      expect(first_revenue > second_revenue).to be true
     end
   end
 
@@ -63,7 +63,7 @@ RSpec.describe 'Items by revenue' do
       second_item = result[:data].second
       first_revenue = top_item[:attributes][:revenue]
       second_revenue = second_item[:attributes][:revenue]
-      expect(first_revenue).to be_greater_than second_revenue
+      expect(first_revenue > second_revenue).to be true
     end
   end
 

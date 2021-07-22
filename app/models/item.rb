@@ -23,7 +23,7 @@ class Item < ApplicationRecord
     end
   end
 
-  def self.order_by_revenue(result_count = 10)
+  def self.order_by_revenue(result_count)
     joins(invoices: :transactions)
     .select('items.*, sum(invoice_items.quantity * invoice_items.unit_price) as revenue')
     .where(transactions: {result: 'success'})
@@ -32,9 +32,5 @@ class Item < ApplicationRecord
     .order('revenue desc')
     .limit(result_count)
     .to_a
-    # .sum('invoice_items.quantity * invoice_items.unit_price')
-    # join invoices, which gets me invoices and iis
-    # join transactions
-    
   end
 end
