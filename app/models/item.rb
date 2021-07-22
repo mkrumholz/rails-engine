@@ -1,6 +1,6 @@
 class Item < ApplicationRecord
   belongs_to :merchant
-  has_many :invoice_items
+  has_many :invoice_items, dependent: :destroy
   has_many :invoices, through: :invoice_items
 
   validates :name, :description, :unit_price, presence: true
@@ -25,12 +25,12 @@ class Item < ApplicationRecord
 
   def self.order_by_revenue(result_count)
     joins(invoices: :transactions)
-    .select('items.*, sum(invoice_items.quantity * invoice_items.unit_price) as revenue')
-    .where(transactions: {result: 'success'})
-    .where(invoices: {status: 'shipped'})
-    .group(:id)
-    .order('revenue desc')
-    .limit(result_count)
-    .to_a
+      .select('items.*, sum(invoice_items.quantity * invoice_items.unit_price) as revenue')
+      .where(transactions: { result: 'success' })
+      .where(invoices: { status: 'shipped' })
+      .group(:id)
+      .order('revenue desc')
+      .limit(result_count)
+      .to_a
   end
 end
