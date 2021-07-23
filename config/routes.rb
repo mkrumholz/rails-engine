@@ -11,7 +11,12 @@ Rails.application.routes.draw do
       get '/merchants/:id/items', to: 'merchants/items#index'
       get '/items/:id/merchant', to: 'items/merchants#index'
 
-      get '/revenue/items', to: 'revenue/items#index'
+      
+      namespace :revenue do
+        get '/items', to: 'items#index'
+        get '/merchants/:id', to: 'merchants#show'
+      end
+      
       get '/revenue/weekly', to: 'revenue#index'
       get '/revenue', to: 'revenue#show'
     end
