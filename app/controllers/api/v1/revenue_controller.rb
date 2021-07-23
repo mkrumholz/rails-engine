@@ -1,9 +1,14 @@
 class Api::V1::RevenueController < ApplicationController
+  def index
+    @weeks = Invoice.revenue_by_week
+    json_response(RevenueSerializer.weekly_report(@weeks))
+  end
+
   def show
     return json_response({ error: 'Bad request' }, :bad_request) unless range_valid?(params)
 
     @revenue = Invoice.revenue_for_range(params[:start], params[:end])
-    json_response(RevenueSerializer.format_json(@revenue))
+    json_response(RevenueSerializer.format_for_range(@revenue))
   end
 
   private

@@ -9,7 +9,7 @@ RSpec.describe Invoice, type: :model do
     it {should have_many(:items).through(:invoice_items) }
   end
 
-  describe 'revenue_for_range' do
+  describe 'class methods' do
     before :each do
       @customer = create(:customer)
       @merchant = create(:merchant)
@@ -36,33 +36,50 @@ RSpec.describe Invoice, type: :model do
       @invoice_item_6 = create(:invoice_item, invoice: @invoice_5, item: @item_6, unit_price: 20.00)
     end
 
-    it 'returns the total revenue for the given range, inclusive of both dates' do
-      start_date = '2021-04-01'
-      end_date = '2021-06-01'
+    describe 'revenue_for_range' do
+      it 'returns the total revenue for the given range, inclusive of both dates' do
+        start_date = '2021-04-01'
+        end_date = '2021-06-01'
 
-      expect(Invoice.revenue_for_range(start_date, end_date)).to eq 250.00
-    end
+        expect(Invoice.revenue_for_range(start_date, end_date)).to eq 250.00
+      end
+      
+      it 'does not include revenue for unshipped invoices' do
+        invoice_2 = create(:invoice, customer: @customer, merchant: @merchant, status: 'pending', created_at: Time.parse('2021-05-01')) # not shipped
+        transaction_2 = create(:transaction, invoice: invoice_2, result: 'success') 
+        invoice_item_3 = create(:invoice_item, invoice: invoice_2, item: @item_3, unit_price: 20.00)
     
-    it 'does not include revenue for unshipped invoices' do
-      invoice_2 = create(:invoice, customer: @customer, merchant: @merchant, status: 'pending', created_at: Time.parse('2021-05-01')) # not shipped
-      transaction_2 = create(:transaction, invoice: invoice_2, result: 'success') 
-      invoice_item_3 = create(:invoice_item, invoice: invoice_2, item: @item_3, unit_price: 20.00)
-  
-      start_date = '2021-04-20'
-      end_date = '2021-05-20'
+        start_date = '2021-04-20'
+        end_date = '2021-05-20'
 
-      expect(Invoice.revenue_for_range(start_date, end_date)).to eq 0.00
+        expect(Invoice.revenue_for_range(start_date, end_date)).to eq 0.00
+      end
+
+      it 'does not include revenue for invoices without a good transaction' do
+        invoice_3 = create(:invoice, customer: @customer, merchant: @merchant, status: 'shipped', created_at: Time.parse('2021-05-01')) # bad transaction
+        transaction_3 = create(:transaction, invoice: invoice_3, result: 'failure')
+        invoice_item_4 = create(:invoice_item, invoice: invoice_3, item: @item_4, unit_price: 20.00)
+
+        start_date = '2021-04-20'
+        end_date = '2021-05-20'
+
+        expect(Invoice.revenue_for_range(start_date, end_date)).to eq 0.00
+      end
     end
 
-    it 'does not include revenue for invoices without a good transaction' do
-      invoice_3 = create(:invoice, customer: @customer, merchant: @merchant, status: 'shipped', created_at: Time.parse('2021-05-01')) # bad transaction
-      transaction_3 = create(:transaction, invoice: invoice_3, result: 'failure')
-      invoice_item_4 = create(:invoice_item, invoice: invoice_3, item: @item_4, unit_price: 20.00)
+    describe 'weekly_report' do
+      it 'returns a list of revenue by week' do
+        report = Invoice.weekly_report
 
-      start_date = '2021-04-20'
-      end_date = '2021-05-20'
-
-      expect(Invoice.revenue_for_range(start_date, end_date)).to eq 0.00
+        expect(report).to be_an Array
+        expect(report.length).to eq 23
+        expect(report.first.week).to eq '2020-12-27'
+        expect(report.first.revenue).to eq 150.00
+        expect(report.second.week).to eq '2021-01-03'
+        expect(report.second.revenue).to eq 0.0
+        expect(report.last.week).to eq '2021-05-30'
+        expect(report.last.revenue).to eq 100.00
+      end
     end
   end
 end

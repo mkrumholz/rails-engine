@@ -1,5 +1,5 @@
 class RevenueSerializer
-  def self.format_json(revenue)
+  def self.format_for_range(revenue)
     {
       data:
       {
