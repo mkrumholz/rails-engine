@@ -43,17 +43,17 @@ RSpec.describe 'weekly revenue report' do
     result = JSON.parse(response.body, symbolize_names: true)
 
     expect(result[:data]).to be_an Array
-    expect(result[:data].length).to eq 23
+    expect(result[:data].length).to eq 3
 
     first_week = result[:data].first
     expect(first_week).to have_key :id
     expect(first_week).to have_key :type
     expect(first_week).to have_key :attributes
-    expect(first_week[:attributes][:week]).to eq '2020-12-27'
+    expect(first_week[:attributes][:week]).to eq '2020-12-28'
     expect(first_week[:attributes][:revenue]).to eq 100.00
 
     last_week = result[:data].last
-    expect(first_week[:attributes][:week]).to eq '2021-05-30'
-    expect(first_week[:attributes][:revenue]).to eq 150.00
+    expect(last_week[:attributes][:week]).to eq '2021-05-31'
+    expect(last_week[:attributes][:revenue]).to eq 150.00
   end
 end

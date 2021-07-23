@@ -17,7 +17,7 @@ class Invoice < ApplicationRecord
       .sum('invoice_items.quantity * invoice_items.unit_price')
   end
 
-  def self.weekly_report
+  def self.revenue_by_week
     joins(:transactions)
       .joins(:invoice_items)
       .select("date_trunc('week', invoices.created_at)::date as week, sum(invoice_items.quantity * invoice_items.unit_price) as revenue")

@@ -67,9 +67,9 @@ RSpec.describe Invoice, type: :model do
       end
     end
 
-    describe 'weekly_report' do
+    describe 'revenue_by_week' do
       it 'returns a list of revenue by week' do
-        report = Invoice.weekly_report
+        report = Invoice.revenue_by_week
 
         expect(report).to be_an Array
         expect(report.length).to eq 3
