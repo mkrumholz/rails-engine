@@ -8,10 +8,10 @@ class Merchant < ApplicationRecord
 
   def total_revenue
     Merchant
-      .joins(items: {invoices: :transactions})
+      .joins(items: { invoices: :transactions })
       .select('merchants.*, sum(invoice_items.quantity * invoice_items.unit_price) as revenue')
       .where(transactions: { result: 'success' }, invoices: { status: 'shipped' })
-      .where(merchants: {id: id})
+      .where(merchants: { id: id })
       .group('merchants.id').first
   end
 end
