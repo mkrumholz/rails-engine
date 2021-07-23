@@ -12,6 +12,7 @@ Rails.application.routes.draw do
       get '/items/:id/merchant', to: 'items/merchants#index'
 
       get '/revenue/items', to: 'revenue/items#index'
+      get '/revenue/weekly', to: 'revenue#index'
       get '/revenue', to: 'revenue#show'
     end
   end

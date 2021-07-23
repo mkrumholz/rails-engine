@@ -1,5 +1,5 @@
 class RevenueSerializer
-  def self.format_json(revenue)
+  def self.format_for_range(revenue)
     {
       data:
       {
@@ -10,5 +10,18 @@ class RevenueSerializer
         }
       }
     }
+  end
+
+  def self.weekly_report(weeks)
+    { data: weeks.map do |week|
+              {
+                id: nil,
+                type: 'weekly_revenue',
+                attributes: {
+                  week: week.week.to_s,
+                  revenue: week.revenue
+                }
+              }
+            end }
   end
 end

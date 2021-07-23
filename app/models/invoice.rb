@@ -16,4 +16,14 @@ class Invoice < ApplicationRecord
       # .where("?::tsrange @> invoices.created_at", "[#{start_date}, #{end_date})")
       .sum('invoice_items.quantity * invoice_items.unit_price')
   end
+
+  def self.revenue_by_week
+    joins(:transactions)
+      .joins(:invoice_items)
+      .select("date_trunc('week', invoices.created_at)::date as week, sum(invoice_items.quantity * invoice_items.unit_price) as revenue")
+      .where(transactions: { result: 'success' })
+      .where(invoices: { status: 'shipped' })
+      .group('week')
+      .order('week').to_a
+  end
 end
