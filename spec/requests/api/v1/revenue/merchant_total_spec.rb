@@ -40,14 +40,14 @@ RSpec.describe 'total for merchant' do
 
   context 'the merchant is valid and found' do
     it 'returns the total revenue for the given merchant' do
-      get "/api/v1/revenue/merchants/#{@merchant.id}"
+      get "/api/v1/revenue/merchants/#{@merchant_1.id}"
       
       expect(response).to have_http_status(200)
 
       result = JSON.parse(response.body, symbolize_names: true)
 
       expect(result[:data]).to be_a Hash
-      expect(result[:data][:id]).to eq @merchant.id.to_s
+      expect(result[:data][:id]).to eq @merchant_1.id.to_s
       expect(result[:data][:type]).to eq 'merchant_revenue'
       expect(result[:data][:attributes]).to be_a Hash
 
