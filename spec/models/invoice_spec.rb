@@ -75,8 +75,6 @@ RSpec.describe Invoice, type: :model do
         expect(report.length).to eq 3
         expect(report.first.week.to_s).to eq '2020-12-28'
         expect(report.first.revenue).to eq 100.00
-        # expect(report.second.week).to eq '2021-01-03'
-        # expect(report.second.revenue).to eq 0.0
         expect(report.last.week.to_s).to eq '2021-05-31'
         expect(report.last.revenue).to eq 150.00
       end
